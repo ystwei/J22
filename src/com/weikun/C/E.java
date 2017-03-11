@@ -35,6 +35,7 @@ public class E {
             this.mMatrix[p1][p2]=1;
 
         }
+        System.out.println(mMatrix);
 
 
     }
@@ -85,6 +86,40 @@ public class E {
         }
         return -1;
     }
+    private void BFS(){//广度优先遍历
+
+        int head=0;
+        int rear=0;
+
+        boolean [] visited=new boolean[this.mVexs.length];
+        int [] queue=new int[this.mVexs.length];
+        for(int i=0;i<visited.length;i++){//由于一开始并没有访问，所以都设为假
+            visited[i]=false;
+        }
+
+        for(int i=0;i<this.mVexs.length;i++){
+            if(visited[i]==false){//代表没被访问
+                visited[i]=true;
+                System.out.print(this.mVexs[i]);
+                queue[rear++]=i;//进入的是已经访问过后的索引号
+            }
+            while(head!=rear){//代表该队列有元素
+                int j=queue[head++];//倒出来A
+                int k=this.firstVertex(i);//B
+                while(k>=0){//找以A点为轴心所有的点，是否有点和A相连
+                    if(visited[k]==false) {//代表没被访问
+                        visited[k]=true;
+                        System.out.print(this.mVexs[k]);
+                        queue[rear++]=k;
+                    }
+                    //j就是第一次倒出来的那个顶点索引，而不是i，我们要找的是倒出来那个点的邻接点。
+                    k=this.nextVertex(j,k);//找到下个以i为索引的相邻邻接点，且有连线
+                }
+            }
+        }
+
+
+    }
     private void DFS(int index, boolean[] visited) {//index ：A
         visited[index]=true;//该节已经被访问了
         int i=this.firstVertex(index);//找到邻接点索引号
@@ -107,6 +142,7 @@ public class E {
                 {'B', 'G'},
                 {'B', 'C'},
                 {'B', 'I'},
+                {'B', 'A'},
                 {'C', 'B'},
                 {'C', 'I'},
                 {'C', 'D'},
@@ -117,12 +153,17 @@ public class E {
                 {'D', 'E'},
                 {'E', 'H'},
                 {'E', 'F'},
+                {'E', 'D'},
+
                 {'F', 'G'},
                 {'F', 'A'},
                 {'F', 'E'},
+
                 {'G', 'H'},
                 {'G', 'D'},
                 {'G', 'B'},
+                {'G', 'F'},
+
                 {'H', 'G'},
                 {'H', 'D'},
                 {'H', 'E'},
@@ -139,5 +180,6 @@ public class E {
         pG = new E(vexs, edges);
         pG.print();   // 打印图
         pG.DFS();     // 深度优先遍历
+        pG.BFS();//广度优先遍历
     }
 }
