@@ -1,11 +1,13 @@
 package com.weikun.D;
 
+import org.junit.Test;
+
 /**
  * Created by Administrator on 2017/3/16.
  * AVL平衡二叉树
  */
 public class A {
-    private static int arr[]= {3,2,1,4,5,6,7,10,9,8};
+    private  int arr[]= {3,2,1,4,5,6,7,10,9,8};
 
     private AVLTreeNode mRoot;    // 根结点
 
@@ -131,31 +133,95 @@ public class A {
 	 */
     private AVLTreeNode insert(AVLTreeNode tree, int key) {
         if(tree==null){//如果没有节点，则创建个节点
-            tree=new AVLTreeNode(key,tree.left,tree.right);
-
-        }
-        if(key<tree.key){//一定在左子树上继续寻找，
-            tree.left=this.insert(tree.left,key);
-            //计算是否打破平衡
-
-            if(this.height(tree.left)-this.height(tree.right)==2){//打破平衡
-                if(key<tree.left.key){//哪一种形状
-                    tree=this.leftLeftRotation(tree);
-                }else{
-
-                    tree=this.leftRightRotation(tree);
-                }
-
-            }
+            tree=new AVLTreeNode(key,null,null);
 
         }else{
+            if(key<tree.key){//一定在左子树上继续寻找，
+                tree.left=this.insert(tree.left,key);
+                //计算是否打破平衡
 
+                if(this.height(tree.left)-this.height(tree.right)==2){//打破平衡
+                    if(key<tree.left.key){//哪一种形状
+                        tree=this.leftLeftRotation(tree);
+                    }else{
+
+                        tree=this.leftRightRotation(tree);
+                    }
+
+                }
+
+            }else if(key>tree.key){//一定在右子树上继续寻找，
+                tree.right=this.insert(tree.right,key);
+
+
+                if(height(tree.right)-height(tree.left)==2){//高度打破平衡
+                    if(key<tree.right.key){
+                        tree=this.rightLeftRotation(tree);
+                    }else{
+
+                        tree=this.rightRightRotation(tree);
+                    }
+
+                }
+            }else{
+                System.out.println("不可以添加重复的节点");
+                return null;
+            }
 
         }
+
+        tree.height=this.max(height(tree.left),height(tree.right))+1;
+        return tree;
     }
 
 
+    /*
+	 * 前序遍历"AVL树"
+	 * DLR
+	 */
+    private void preOrder(AVLTreeNode tree) {
+        if(tree != null) {
+            System.out.print(tree.key+" ");
+            preOrder(tree.left);
+            preOrder(tree.right);
+        }
+    }
 
+    /*
+	 * 后序遍历"AVL树"
+	 * LRD
+	 */
+    private void postOrder(AVLTreeNode tree) {
+        if(tree != null) {
+            postOrder(tree.left);
+            postOrder(tree.right);
+            System.out.print(tree.key+" ");
+        }
+    }
+
+    /*
+	 * 中序遍历"AVL树"
+	 * LDR
+	 */
+    private void inOrder(AVLTreeNode tree) {
+        if(tree != null){
+            inOrder(tree.left);
+            System.out.print(tree.key+" ");
+            inOrder(tree.right);
+        }
+    }
+    @Test
+    public void test(){
+        for(int i=0;i<this.arr.length;i++){
+            this.mRoot=this.insert(this.mRoot,arr[i]);
+            System.out.printf("%d ",arr[i]);
+        }
+        System.out.println();
+        preOrder(this.mRoot);
+        System.out.println();
+
+        postOrder(this.mRoot);
+    }
 
 
 }
